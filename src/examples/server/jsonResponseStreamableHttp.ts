@@ -144,15 +144,8 @@ app.get('/mcp', async (req: Request, res: Response) => {
   res.status(405).set('Allow', 'POST').send('Method Not Allowed');
 });
 
-// Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`MCP Streamable HTTP Server listening on port ${PORT}`);
-});
+const disconnect = async () => {
+  await server.close()
+}
 
-// Handle server shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down server...');
-  await server.close();
-  process.exit(0);
-});
+export { app as streamableApp, disconnect as streamableAppDisconnect }

@@ -109,17 +109,9 @@ app.get('/mcp', async (req: Request, res: Response) => {
   await transport.handleRequest(req, res);
 });
 
-
-// Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
-});
-
-// Handle server shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down server...');
+const disconnect = async () => {
   clearInterval(resourceChangeInterval);
   await server.close();
-  process.exit(0);
-});
+}
+
+export { app as standaloneSseWithGetStreamable, disconnect as standaloneSseWithGetStreamableDisconnect }

@@ -196,37 +196,7 @@ app.post("/messages", async (req: Request, res: Response) => {
   }
 });
 
-
-// Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Backwards compatible MCP server listening on port ${PORT}`);
-  console.log(`
-==============================================
-SUPPORTED TRANSPORT OPTIONS:
-
-1. Streamable Http(Protocol version: 2025-03-26)
-   Endpoint: /mcp
-   Methods: GET, POST, DELETE
-   Usage: 
-     - Initialize with POST to /mcp
-     - Establish SSE stream with GET to /mcp
-     - Send requests with POST to /mcp
-     - Terminate session with DELETE to /mcp
-
-2. Http + SSE (Protocol version: 2024-11-05)
-   Endpoints: /sse (GET) and /messages (POST)
-   Usage:
-     - Establish SSE stream with GET to /sse
-     - Send requests with POST to /messages?sessionId=<id>
-==============================================
-`);
-});
-
-// Handle server shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down server...');
-
+const disconnect = async () => {
   // Close all active transports to properly clean up resources
   for (const sessionId in transports) {
     try {
@@ -238,6 +208,6 @@ process.on('SIGINT', async () => {
     }
   }
   await server.close();
-  console.log('Server shutdown complete');
-  process.exit(0);
-});
+}
+
+export { app as sseAndStreamableHttp, disconnect as sseAndStreamableHttpDisconnect }

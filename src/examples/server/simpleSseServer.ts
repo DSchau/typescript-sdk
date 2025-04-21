@@ -143,17 +143,7 @@ app.post('/messages', async (req: Request, res: Response) => {
   }
 });
 
-// Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Simple SSE Server (deprecated protocol version 2024-11-05) listening on port ${PORT}`);
-});
-
-// Handle server shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down server...');
-
-  // Close all active transports to properly clean up resources
+const disconnect = async () => {
   for (const sessionId in transports) {
     try {
       console.log(`Closing transport for session ${sessionId}`);
@@ -164,6 +154,6 @@ process.on('SIGINT', async () => {
     }
   }
   await server.close();
-  console.log('Server shutdown complete');
-  process.exit(0);
-});
+}
+
+export { app as simpleSseServer, disconnect as simpleSseServerDisconnect }

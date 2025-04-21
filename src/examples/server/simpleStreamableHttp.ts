@@ -283,16 +283,7 @@ app.delete('/mcp', async (req: Request, res: Response) => {
   }
 });
 
-// Start the server
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`MCP Streamable HTTP Server listening on port ${PORT}`);
-});
-
-// Handle server shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down server...');
-
+const disconnect = async () => {
   // Close all active transports to properly clean up resources
   for (const sessionId in transports) {
     try {
@@ -304,6 +295,6 @@ process.on('SIGINT', async () => {
     }
   }
   await server.close();
-  console.log('Server shutdown complete');
-  process.exit(0);
-});
+}
+
+export { app as simpleStreamableHttp, disconnect as simpleStreamableHttpDisconnect }

@@ -145,28 +145,13 @@ app.delete('/mcp', async (req: Request, res: Response) => {
   }));
 });
 
-// Start the server
-const PORT = 3000;
-setupServer().then(() => {
-  app.listen(PORT, () => {
-    console.log(`MCP Streamable HTTP Server listening on port ${PORT}`);
-  });
-}).catch(error => {
-  console.error('Failed to set up the server:', error);
-  process.exit(1);
-});
+const disconnect = async () => {
+  try {
+    console.log(`Closing transport`);
+    await transport.close();
+  } catch (error) {
+    console.error(`Error closing transport:`, error);
+  }
+}
 
-// Handle server shutdown
-process.on('SIGINT', async () => {
-  console.log('Shutting down server...');
-    try {
-      console.log(`Closing transport`);
-      await transport.close();
-    } catch (error) {
-      console.error(`Error closing transport:`, error);
-    }
-  
-  await server.close();
-  console.log('Server shutdown complete');
-  process.exit(0);
-});
+export { setupServer as statelessStreamableServerSetup, app as statelessStreamableServer, disconnect as statelessStreamableServerDisconnect }
